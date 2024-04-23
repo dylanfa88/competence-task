@@ -13,7 +13,6 @@ class CoffeeSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('coffees')->truncate();
         DB::table('coffees')->insert([
             [
                 'name' => 'Gold Coffee',

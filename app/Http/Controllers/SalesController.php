@@ -17,7 +17,7 @@ class SalesController extends Controller
     {
         $sales = Sale::query()
             ->leftJoin('coffees', 'sales.coffee_id', '=', 'coffees.id')
-            ->orderBy('id', 'desc')
+            ->orderBy('sales.id', 'desc')
             ->get();
         return response()->json([
             'data' => [
