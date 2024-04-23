@@ -5,6 +5,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use \App\Http\Controllers\SalesController;
+use \App\Http\Controllers\CoffeesController;
 
 // Laravel Routes
 
@@ -30,6 +31,10 @@ require __DIR__.'/auth.php';
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/get-coffees', [CoffeesController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('coffees.getCoffees');
 
 Route::get('/sales', function () {
     return Inertia::render('Sales');

@@ -7,12 +7,12 @@ namespace App\Services;
 class SalesService
 {
     protected float $sellingPrice;
-    protected float $profitMargin = 0.25;
     protected float $shippingCost = 10;
 
     public function __construct(
         protected float $quantity,
         protected float $unitCost,
+        protected float $profitMargin,
     ) {
     }
 

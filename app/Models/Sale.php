@@ -9,11 +9,13 @@ class Sale extends Model
 {
     use HasFactory;
 
+    public int $coffee_id;
     public float $quantity;
     public float $unit_cost;
     public float $selling_price;
 
     protected $fillable = [
+        'coffee_id',
         'quantity',
         'unit_cost',
         'selling_price'

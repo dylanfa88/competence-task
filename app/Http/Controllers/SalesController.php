@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sale;
+use App\Models\Coffee;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Services\SalesService;
@@ -14,7 +15,10 @@ class SalesController extends Controller
      */
     public function index(): JsonResponse
     {
-        $sales = Sale::query()->orderBy('id', 'desc')->get();
+        $sales = Sale::query()
+            ->leftJoin('coffees', 'sales.coffee_id', '=', 'coffees.id')
+            ->orderBy('id', 'desc')
+            ->get();
         return response()->json([
             'data' => [
                 'sales' => $sales
@@ -28,6 +32,7 @@ class SalesController extends Controller
     public function store(Request $request): JsonResponse
     {
         $request->validate([
+            'product' => 'required|exists:App\Models\Coffee,id',
             'quantity' => 'required|numeric',
             'unit_cost' => 'required|numeric',
             'selling_price' => 'required|numeric',
@@ -37,6 +42,7 @@ class SalesController extends Controller
             'quantity' => $request->input('quantity'),
             'unit_cost' => $request->input('unit_cost'),
             'selling_price' => $request->input('selling_price'),
+            'coffee_id' => $request->input('product'),
         ]);
 
         if ($newSale) {
@@ -57,13 +63,18 @@ class SalesController extends Controller
     public function getSellingPrice(Request $request): JsonResponse
     {
         $request->validate([
+            'product' => 'required|exists:App\Models\Coffee,id',
             'quantity' => 'required|numeric',
             'unit_cost' => 'required|numeric',
         ]);
 
+        $coffee = Coffee::query()->findOrFail($request->input('product'));
+        $profitMargin = $coffee->profit_margin;
+
         $saleService = new SalesService(
             $request->input('quantity'),
-            $request->input('unit_cost')
+            $request->input('unit_cost'),
+            $profitMargin
         );
         $saleService->calculateSellingPrice();
         $sellingPrice = $saleService->getSellingPrice();
